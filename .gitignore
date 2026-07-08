@@ -1,0 +1,47 @@
+# Logs
+logs
+server/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment variables and local secrets
+.env
+.env.*
+server/.env
+server/.env.*
+client/.env
+client/.env.*
+!*.env.example
+!server/.env.example
+!client/.env.example
+
+# Dependencies and generated builds
+node_modules
+dist
+dist-ssr
+*.local
+
+# User-uploaded receipt files
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Test and tool output
+coverage/
+.nyc_output/
+.vite/
+.vite-temp/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
