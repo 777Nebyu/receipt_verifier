@@ -6,7 +6,7 @@ The system allows users to sign in, verify receipts by reference number or recei
 
 ## Technology Stack
 
-- Frontend: React, Vite, plain CSS, html5-qrcode, Recharts
+- Frontend: React, Vite, plain CSS, Recharts
 - Backend: Node.js, Express.js
 - Architecture: MVC-style backend structure with separate routes, controllers, models, middleware, services, and client
 - Database: PostgreSQL
