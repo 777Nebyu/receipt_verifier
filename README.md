@@ -81,8 +81,8 @@ server/utils/           Logger configuration
     |       receiptController.js
     |       
     +---database
+    |       ER Diagram.png
     |       schema.sql
-    |       
     |       
     +---middleware
     |       authMiddleware.js
@@ -172,10 +172,10 @@ The API runs on `http://localhost:5000` and the client runs on `http://localhost
 ## Database
 
 The database DDL is included in:
+`server/database/schema.sql`
 
-
-server/database/schema.sql
-
+The ER diagram is included in:
+`server/database/ER Diagram.png`
 
 
 
