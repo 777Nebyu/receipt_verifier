@@ -1,8 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Activity,
-  Camera,
   Download,
   Eye,
   EyeOff,
@@ -79,7 +77,6 @@ function App() {
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [scannerOpen, setScannerOpen] = useState(false);
   const [admin, setAdmin] = useState({ users: [], logs: [], stats: null });
   const [activePage, setActivePage] = useState("verify");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -536,10 +533,6 @@ function App() {
                       <Activity size={18} />
                       {loading ? "Verifying" : "Verify receipt"}
                     </button>
-                    <button type="button" className="secondary" onClick={() => setScannerOpen(!scannerOpen)}>
-                      <Camera size={18} />
-                      QR scan
-                    </button>
                   </div>
                 </form>
                 <div className="hint-list">
@@ -549,8 +542,6 @@ function App() {
 
               <ResultPanel result={result} token={token} />
             </section>
-
-            {scannerOpen && <QrPanel setScannerOpen={setScannerOpen} setResult={setResult} api={api} loadHistory={loadHistory} />}
 
             <section className="panel">
               <div className="panel-title">
@@ -662,65 +653,35 @@ function ResultPanel({ result, token }) {
       </dl>
       {downloadError && <p className="muted">{downloadError}</p>}
       {result.verified && result.receiptId && (
-        <button
-          type="button"
-          className="download"
-          disabled={downloading}
-          onClick={async () => {
-            setDownloading(true);
-            setDownloadError("");
-            try {
-              await downloadReceiptPdf(result, token);
-            } catch (error) {
-              setDownloadError(error.message);
-            } finally {
-              setDownloading(false);
-            }
-          }}
-        >
-          <Download size={18} />
-          {downloading ? "Preparing PDF" : "Download PDF receipt"}
-        </button>
+        <div className="result-actions">
+          <button
+            type="button"
+            className="download"
+            disabled={downloading}
+            onClick={async () => {
+              setDownloading(true);
+              setDownloadError("");
+              try {
+                await downloadReceiptPdf(result, token);
+              } catch (error) {
+                setDownloadError(error.message);
+              } finally {
+                setDownloading(false);
+              }
+            }}
+          >
+            <Download size={18} />
+            {downloading ? "Preparing PDF" : "Download PDF receipt"}
+          </button>
+          {result.sourceUrl && !result.sourceUrl.startsWith("qr://") && (
+            <a className="download secondary" href={result.sourceUrl} target="_blank" rel="noreferrer">
+              <ReceiptText size={18} />
+              View original receipt
+            </a>
+          )}
+        </div>
       )}
     </div>
-  );
-}
-
-function QrPanel({ setScannerOpen, setResult, api, loadHistory }) {
-  const scannerRef = useRef(null);
-
-  useEffect(() => {
-    scannerRef.current = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 240 }, false);
-    scannerRef.current.render(
-      async (decodedText) => {
-        try {
-          await scannerRef.current.clear();
-          setScannerOpen(false);
-          const data = await api("/receipt/verify", { method: "POST", body: JSON.stringify({ qrData: decodedText, provider: "boa" }) });
-          setResult(data.result);
-          await loadHistory();
-        } catch (error) {
-          setResult({ verified: false, reason: error.message });
-        }
-      },
-      () => {}
-    );
-    return () => {
-      scannerRef.current?.clear().catch(() => {});
-    };
-  }, [api, loadHistory, setResult, setScannerOpen]);
-
-  return (
-    <section className="panel scanner">
-      <div className="panel-title">
-        <Camera />
-        <div>
-          <h2>QR verification</h2>
-          <p>BOA encrypted QR payloads are decrypted on the Express backend.</p>
-        </div>
-      </div>
-      <div id="qr-reader" />
-    </section>
   );
 }
 

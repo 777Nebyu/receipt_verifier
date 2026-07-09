@@ -189,6 +189,12 @@ button:disabled {
   margin-top: 14px;
 }
 
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .text-button {
   min-height: auto;
   width: 100%;
@@ -579,6 +585,7 @@ tbody tr:hover {
   .topbar,
   .upload-row,
   .actions,
+  .result-actions,
   .row-actions {
     align-items: stretch;
     flex-direction: column;
